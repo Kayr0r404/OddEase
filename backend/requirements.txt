@@ -1,0 +1,10 @@
+fastapi
+sqlmodel
+pwdlib[argon2]
+jwt
+pydantic
+pydantic_settings
+sqlalchemy[asyncio]
+asyncpg
+uvicorn
+pydantic[email]
