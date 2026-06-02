@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 10
     refresh_token_expire_days: int = 7
-    db_name: str = "odds_db"
+    db_name: str = "oddease_db"
     db_host: str = "localhost"
     db_port: Annotated[int, Field(ge=1, le=65000)] = 5432
     db_user: str = "fastapi_user"
