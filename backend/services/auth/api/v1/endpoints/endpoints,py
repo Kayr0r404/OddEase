@@ -1,3 +1,68 @@
+from datetime import timedelta
+from typing import Annotated
+import secrets
+
+from fastapi import Depends, HTTPException, status
+from fastapi.responses import JSONResponse
+from fastapi.security import OAuth2PasswordRequestForm
+
+from shared.confiq import settings
+from shared.auth import create_access_token, create_refresh_token, verify_password
+from shared.repositories.factory import get_user_repository
+
+
 def logout(): ...
-def token(): ...
+async def login_for_access_token(
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+):
+
+    user_repository = get_user_repository()
+    existing_user = await user_repository.get_by_email(form_data.username.lower())
+
+    if not existing_user or not verify_password(
+        form_data.password, existing_user.password_hash
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorect credentials"
+        )
+
+    access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
+    access_token = create_access_token(
+        data={"sub": str(existing_user.id)}, expires_delta=access_token_expires
+    )
+    refresh_token = create_refresh_token({"sub": str(existing_user.id)})
+    csrf_token = secrets.token_hex(32)
+
+    response = JSONResponse(content={"message": "logged in successfully"})
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        httponly=True,
+        secure=True,
+        samesite="strict",
+        max_age=900,
+        path="/",
+    )
+    response.set_cookie(
+        key="refresh_token",
+        value=refresh_token,
+        httponly=True,
+        secure=True,
+        samesite="strict",
+        max_age=60 * 60 * 24 * 30,
+        path="/",
+    )
+    response.set_cookie(
+        key="csrf_token",
+        value=csrf_token,
+        httponly=False,
+        secure=True,
+        samesite="lax",
+        max_age=900,
+        path="/",
+    )
+
+    return response
+
+
 def refresh(): ...

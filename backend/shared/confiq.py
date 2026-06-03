@@ -1,7 +1,7 @@
 import os
 from typing import Annotated
 
-from pydantic import Field, SecretStr
+from pydantic import computed_field, Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -17,17 +17,25 @@ class Settings(BaseSettings):
 
     secret_key: SecretStr
     refresh_key: SecretStr
+
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 10
     refresh_token_expire_days: int = 7
-    db_name: str = "oddease_db"
-    db_host: str = "localhost"
-    db_port: Annotated[int, Field(ge=1, le=65000)] = 5432
-    db_user: str = "fastapi_user"
-    db_password: str = "fastapi_auth"
-    postgres_db_url: str = (
-        f"postgresql+asyncpg://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
-    )
+
+    db_name: str
+    db_host: str
+    db_port: Annotated[int, Field(ge=1, le=65000)]
+    db_user: str
+    db_password: str
+
+    @computed_field
+    @property
+    def postgres_db_url(self) -> str:
+        return (
+            f"postgresql+asyncpg://"
+            f"{self.db_user}:{self.db_password}"
+            f"@{self.db_host}:{self.db_port}/{self.db_name}"
+        )
 
 
 settings = Settings()
