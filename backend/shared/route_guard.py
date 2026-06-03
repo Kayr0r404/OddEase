@@ -30,7 +30,7 @@ def _client_ip(request: Request) -> str:
 class InMemoryRateStore:
     def __init__(self) -> None:
         self._buckets: dict[str, tuple[float, int]] = {}
-        self._lock = asyncio.lock()
+        self._lock = asyncio.Lock()
 
     async def hit(self, key: str, window_seconds: int) -> int:
         now = time.time()
@@ -170,7 +170,7 @@ def protected_route(
     csrf_required: bool = True,
     require_verified_email: bool = False,
     enforce_team_creation_limit: bool = False,
-) -> Dict[str:Any]:
+) -> Dict[str, Any]:
     config = GuardConfig(
         auth="protected",
         throttle=rate_limit or DEFAULT_PROTECTED_LIMIT,

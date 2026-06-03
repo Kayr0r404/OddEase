@@ -1,6 +1,10 @@
 from shared.confiq import settings
-from UserRepository.postgres_user_repository import PostgresUserRepository
-from UserRepository.mongo_user_repository import MongoUserRepository
+from shared.repositories.UserRepository.postgres_user_repository import (
+    PostgresUserRepository,
+)
+from shared.repositories.UserRepository.mongo_user_repository import (
+    MongoUserRepository,
+)
 
 
 def get_user_repository():
