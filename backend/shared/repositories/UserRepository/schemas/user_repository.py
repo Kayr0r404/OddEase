@@ -5,21 +5,21 @@ from typing import Any, List, Literal, Protocol
 class PrivateUserRecord(BaseModel):
     id: str
     email: EmailStr
-    password_hash: str
+    hashed_password: str
     first_name: str
     last_name: str
-    user_name: str
+    username: str
     avatar_url: str | None = None
-    sex: Literal["male", "female"]
+    sex: Literal["Male", "Female"]
 
 
 class PublicUserRecord(BaseModel):
     id: str
     first_name: str
     last_name: str
-    user_name: str
+    username: str
     avatar_url: str | None = None
-    sex: Literal["male", "female"]
+    sex: Literal["Male", "Female"]
 
 
 class UserRepository(Protocol):

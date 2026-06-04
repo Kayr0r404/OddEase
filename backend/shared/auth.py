@@ -22,13 +22,31 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 # +++++++++++ Access Token ++++++++++++++++++++++++++++++++++++++++++++++
 
+import uuid
+import jwt
+
+# from datetime import datetime as dt, timedelta, timezone
+# from typing import Dict
+
 
 def create_access_token(data: Dict, expires_delta: timedelta | None = None) -> str:
     to_encode = data.copy()
+
     expire = dt.now(timezone.utc) + (
-        expires_delta or timedelta(minutes=settings.access_token_expire_minutes)
+        expires_delta
+        if expires_delta is not None
+        else timedelta(minutes=settings.access_token_expire_minutes)
     )
-    to_encode["exp"] = expire
+
+    to_encode.update(
+        {
+            "exp": expire,
+            "iat": dt.now(timezone.utc),  # issued-at for auditing
+            "jti": str(uuid.uuid4()),  # unique ID for revocation support
+            "type": "access",  # reject refresh tokens used as access
+        }
+    )
+
     return jwt.encode(
         to_encode,
         settings.secret_key.get_secret_value(),
@@ -88,7 +106,7 @@ def create_refresh_token(data: Dict) -> str:
     )
     return jwt.encode(
         payload,
-        settings.refresh_token_key.get_secret_value(),
+        settings.refresh_key.get_secret_value(),
         settings.algorithm,
     )
 

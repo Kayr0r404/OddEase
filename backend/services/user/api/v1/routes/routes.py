@@ -3,7 +3,7 @@ from fastapi import APIRouter, status
 from ..endpoints import endpoints
 from shared.route_guard import protected_route, public_route
 
-router = APIRouter(prefix="/users")
+router = APIRouter(prefix="/users", tags=["User Managemnt"])
 router.add_api_route(
     "/",
     endpoints.get_users,

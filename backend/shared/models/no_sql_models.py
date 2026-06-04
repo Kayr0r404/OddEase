@@ -1,6 +1,5 @@
 from datetime import datetime, timezone
 from typing import Annotated, Literal
-from uuid import UUID, uuid4
 
 from beanie import Document, Indexed, Link
 from pydantic import EmailStr, Field, field_validator
@@ -18,7 +17,7 @@ class User(Document):
     email: Annotated[EmailStr, Indexed(unique=True)]
     hashed_password: str
 
-    sex: Literal["male", "female"]
+    sex: Literal["Male", "Female"]
 
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 

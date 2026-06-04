@@ -22,19 +22,36 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 10
     refresh_token_expire_days: int = 7
 
-    db_name: str
-    db_host: str
-    db_port: Annotated[int, Field(ge=1, le=65000)]
-    db_user: str
-    db_password: str
+    postgres_db_name: str
+    postgres_db_host: str
+    postgres_db_port: Annotated[int, Field(ge=1, le=65000)]
+    postgres_db_user: str
+    postgres_db_password: str
+
+    mongo_db_name: str
+    mongo_db_host: str
+    mongo_db_port: Annotated[int, Field(ge=1, le=65000)]
+    mongo_db_user: str
+    mongo_db_password: str
+
+    user_db_provider: str = "mongo"
 
     @computed_field
     @property
     def postgres_db_url(self) -> str:
         return (
             f"postgresql+asyncpg://"
-            f"{self.db_user}:{self.db_password}"
-            f"@{self.db_host}:{self.db_port}/{self.db_name}"
+            f"{self.postgres_db_user}:{self.postgres_db_password}"
+            f"@{self.postgres_db_host}:{self.postgres_db_port}/{self.postgres_db_name}"
+        )
+
+    @computed_field
+    @property
+    def mongo_db_url(self) -> str:
+        return (
+            f"mongodb://"
+            # f"{self.mongo_db_user}:{self.mongo_db_password}"
+            f"{self.mongo_db_host}:{self.mongo_db_port}"
         )
 
 
