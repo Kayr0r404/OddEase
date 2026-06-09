@@ -17,3 +17,10 @@ router.add_api_route(
     methods=["Post"],
     status_code=status.HTTP_201_CREATED,
 )
+
+router.add_api_route(
+    "/logout",
+    endpoints.logout,
+    status_code=status.HTTP_200_OK,
+    methods=["DELETE"],
+)

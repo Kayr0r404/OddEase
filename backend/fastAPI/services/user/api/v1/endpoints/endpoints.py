@@ -1,14 +1,15 @@
 from typing import Annotated, Any, List
 
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, Request, status
 
-from ....schemas.user_schema import PrivateUser, PublicUser
+from ....schemas.user_schema import CreateUser, PrivateUser, PublicUser
 from shared.repositories.factory import get_user_repository
 from shared.repositories.UserRepository.mongo_user_repository import MongoUserRepository
+from shared.auth import CurrentUser
 
 
 async def create_user(
-    data: PrivateUser,
+    data: CreateUser,
     user_repo: MongoUserRepository = Depends(get_user_repository),
 ) -> PrivateUser:
 
@@ -32,7 +33,13 @@ async def update_user(
     user_id: str,
     data: PrivateUser,
     user_repo: MongoUserRepository = Depends(get_user_repository),
+    current_user_id: Annotated[str, Depends(CurrentUser)] = None,
 ) -> PrivateUser:
+    if current_user_id != user_id:
+        raise HTTPException(
+            status_code=status.status.HTTP_401_UNAUTHORIZED,
+            detail="Not authorized to complete this operation",
+        )
 
     existing = await user_repo.get_by_id(user_id=user_id)
     if not existing:
@@ -55,7 +62,13 @@ async def update_user(
 async def delete_user(
     user_id: str,
     user_repo: MongoUserRepository = Depends(get_user_repository),
+    current_user_id: Annotated[str, Depends(CurrentUser)] = None,
 ) -> bool:
+    if current_user_id != user_id:
+        raise HTTPException(
+            status_code=status.status.HTTP_401_NOT_AUTHORIZED,
+            detail="Not authorized to complete this operation",
+        )
 
     existing = await user_repo.get_by_id(user_id=user_id)
     if not existing:
@@ -88,10 +101,12 @@ async def get_user_by_id(
 
 
 async def get_users(
+    request: Request,
     skip: int = 0,
     limit: int = 20,
     user_repo: MongoUserRepository = Depends(get_user_repository),
 ) -> List[PublicUser]:
+    print(request.headers)
     try:
         users_data = await user_repo.get_all(skip=skip, limit=limit).to_list()
     except Exception as e:

@@ -1,11 +1,14 @@
 from datetime import datetime as dt, timedelta, timezone
-from typing import Dict
+from typing import Annotated, Dict, Optional
 
 import jwt
-from fastapi import HTTPException, status
+from beanie import PydanticObjectId
+from fastapi import Cookie, Depends, HTTPException, Request, status
 from pwdlib import PasswordHash
 
 from .confiq import settings
+from .models.no_sql_models import User
+from .repositories.UserRepository.schemas.user_repository import PrivateUserRecord
 
 # +++++++++++ Password Hashing ++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -129,3 +132,56 @@ def verify_refresh_token(refresh_token: str) -> str | None:
         return None
 
     return payload.get("sub") or None
+
+
+# +++++++++++ Current User ++++++++++++++++++++++++++++++++++++++++++++++
+
+
+async def get_current_user(
+    request: Request,
+    access_token: Optional[str] = Cookie(None),  # or Cookie(None)
+    csrf_token: Optional[str] = Cookie(None),
+) -> PrivateUserRecord:
+    if not access_token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated",
+            headers={"WWW-Authenticate": "Bearer"},  # fixed header name
+        )
+
+    if request.method in {"POST", "PUT", "PATCH", "DELETE"}:
+        header_csrf = request.headers.get("X-CSRF-Token")
+        if not header_csrf or header_csrf != csrf_token:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="CSRF validation failed.",
+            )
+
+    user_id = verify_access_token(token=access_token)
+    if not user_id:  # check the result, not the token
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired token",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    try:
+        object_id = PydanticObjectId(user_id)
+    except (TypeError, ValueError):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token payload",
+        )
+
+    user = await User.get(object_id)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User no longer exists.",
+        )
+    return user
+
+
+CurrentUser = Annotated[
+    PrivateUserRecord, Depends(get_current_user)
+]  # aligned with return type

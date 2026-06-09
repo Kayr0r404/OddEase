@@ -17,7 +17,7 @@ class User(Document):
     email: Annotated[EmailStr, Indexed(unique=True)]
     hashed_password: str
 
-    sex: Literal["Male", "Female"]
+    sex: Literal["Male", "Female"] | None = None
 
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
