@@ -6,7 +6,7 @@ with authorisation checks and duplicate-email validation.
 
 from typing import Annotated, Any, List
 
-from fastapi import Depends, HTTPException, Request, status
+from fastapi import Depends, Header, HTTPException, Request, status
 
 from ....schemas.user_schema import CreateUser, PrivateUser, PublicUser
 from shared.repositories.factory import get_user_repository
@@ -39,11 +39,11 @@ async def update_user(
     user_id: str,
     data: PrivateUser,
     user_repo: MongoUserRepository = Depends(get_user_repository),
-    current_user_id: Annotated[str, Depends(CurrentUser)] = None,
+    x_user_id: Annotated[str | None, Header(alias="X-USER-ID")] = None,
 ) -> PrivateUser:
-    if current_user_id != user_id:
+    if x_user_id != user_id:
         raise HTTPException(
-            status_code=status.status.HTTP_401_UNAUTHORIZED,
+            status_code=status.HTTP_403_FORBIDDEN,
             detail="Not authorized to complete this operation",
         )
 
