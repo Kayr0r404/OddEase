@@ -1,3 +1,9 @@
+"""PostgreSQL connection initialisation via SQLModel/SQLAlchemy.
+
+Creates an async SQLAlchemy engine with asyncpg, runs DDL to create
+all tables, and provides a session factory for dependency injection.
+"""
+
 from typing import Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine

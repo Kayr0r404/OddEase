@@ -1,4 +1,8 @@
-from contextlib import asynccontextmanager
+"""MongoDB connection initialisation via Beanie ODM.
+
+Creates an async MongoDB client and initialises Beanie with the
+User document model.
+"""
 
 from beanie import init_beanie
 from pymongo import AsyncMongoClient

@@ -1,10 +1,16 @@
+"""User API route definitions.
+
+Registers user CRUD endpoints under /users with public route guards
+for rate limiting.
+"""
+
 from fastapi import APIRouter, status
 
 from ..endpoints import endpoints
 from shared.route_guard import protected_route, public_route
 from ....schemas.user_schema import PrivateUser, PublicUser
 
-router = APIRouter(prefix="/users", tags=["User Managemnt"])
+router = APIRouter(prefix="/users", tags=["User Management"])
 router.add_api_route(
     "/",
     endpoints.get_users,

@@ -1,3 +1,7 @@
+/*
+ * OddEase Spring Boot context-load test.
+ */
+
 package co.za.oddease.oddease;
 
 import org.junit.jupiter.api.Test;

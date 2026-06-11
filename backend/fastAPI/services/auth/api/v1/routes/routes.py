@@ -1,8 +1,13 @@
+"""Auth API route definitions.
+
+Registers /token, /refresh, and /logout endpoints under /auth.
+"""
+
 from fastapi import APIRouter, status
 
 from ..endpoints import endpoints
 
-router = APIRouter(prefix="/auth", tags=["Authenticatioon"])
+router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 router.add_api_route(
     "/token",

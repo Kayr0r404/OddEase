@@ -1,3 +1,9 @@
+"""Auth endpoint handlers: login, token refresh, and logout.
+
+Handles user authentication by validating credentials and issuing
+HttpOnly JWT cookies (access + refresh) along with a CSRF token.
+"""
+
 from datetime import timedelta
 from typing import Annotated
 import secrets

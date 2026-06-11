@@ -1,3 +1,9 @@
+"""PostgreSQL table models (SQLModel).
+
+Defines Image, Comment, and Like tables created in PostgreSQL
+via SQLModel.metadata.create_all.
+"""
+
 from datetime import datetime, timezone
 from uuid import UUID, uuid4
 

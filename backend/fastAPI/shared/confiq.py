@@ -1,3 +1,9 @@
+"""Application settings loaded from environment variables.
+
+Uses pydantic-settings to read a .env file and validate configuration
+for JWT tokens, PostgreSQL, and MongoDB connections.
+"""
+
 import os
 from typing import Annotated
 

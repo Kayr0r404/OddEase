@@ -1,3 +1,9 @@
+"""MongoDB user repository implementation via Beanie ODM.
+
+Provides CRUD operations for users stored in MongoDB, mapping
+between Beanie User documents and PrivateUserRecord/PublicUserRecord DTOs.
+"""
+
 from typing import Any, Dict, List
 
 from pydantic import EmailStr

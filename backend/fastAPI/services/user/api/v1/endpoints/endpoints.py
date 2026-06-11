@@ -1,3 +1,9 @@
+"""User endpoint handlers: CRUD operations for user accounts.
+
+Provides create, read, update, delete, and list operations for users,
+with authorisation checks and duplicate-email validation.
+"""
+
 from typing import Annotated, Any, List
 
 from fastapi import Depends, HTTPException, Request, status

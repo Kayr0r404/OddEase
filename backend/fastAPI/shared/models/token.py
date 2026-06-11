@@ -1,3 +1,5 @@
+"""Pydantic model for JWT token responses."""
+
 from pydantic import BaseModel
 
 

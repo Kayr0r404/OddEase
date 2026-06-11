@@ -1,3 +1,5 @@
+"""User service Pydantic schemas for request/response serialisation."""
+
 from typing import Literal
 
 from pydantic import BaseModel, EmailStr

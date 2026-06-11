@@ -1,3 +1,9 @@
+"""User repository factory.
+
+Returns the appropriate repository implementation (MongoDB or PostgreSQL)
+based on the USER_DB_PROVIDER setting.
+"""
+
 from shared.confiq import settings
 from shared.repositories.UserRepository.postgres_user_repository import (
     PostgresUserRepository,

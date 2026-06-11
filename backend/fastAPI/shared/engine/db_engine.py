@@ -1,3 +1,9 @@
+"""FastAPI lifespan handler for database initialisation and teardown.
+
+Initialises MongoDB (via Beanie) and PostgreSQL (via SQLModel/SQLAlchemy)
+on application startup and closes the PostgreSQL connection on shutdown.
+"""
+
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI

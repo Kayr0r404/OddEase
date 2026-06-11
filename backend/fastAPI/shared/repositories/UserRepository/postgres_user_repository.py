@@ -1,3 +1,9 @@
+"""PostgreSQL user repository (stub).
+
+Placeholder for a future PostgreSQL-backed user repository
+implementation conforming to the UserRepository protocol.
+"""
+
 from pydantic import EmailStr
 
 

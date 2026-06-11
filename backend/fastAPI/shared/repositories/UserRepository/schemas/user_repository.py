@@ -1,3 +1,10 @@
+"""User repository data transfer objects and protocol.
+
+Defines PrivateUserRecord (includes hashed_password),
+PublicUserRecord (excludes sensitive data), and the
+UserRepository protocol interface.
+"""
+
 from pydantic import BaseModel, EmailStr
 from typing import Any, List, Literal, Protocol
 

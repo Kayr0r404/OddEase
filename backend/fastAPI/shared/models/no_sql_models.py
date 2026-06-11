@@ -1,3 +1,9 @@
+"""MongoDB document models (Beanie ODM).
+
+Defines User and Review documents stored in MongoDB collections
+'users' and 'reviews'.
+"""
+
 from datetime import datetime, timezone
 from typing import Annotated, Literal
 

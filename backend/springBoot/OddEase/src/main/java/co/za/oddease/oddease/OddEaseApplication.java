@@ -1,3 +1,9 @@
+/*
+ * OddEase Spring Boot entry point.
+ *
+ * Placeholder for future Java microservices within the OddEase platform.
+ */
+
 package co.za.oddease.oddease;
 
 import org.springframework.boot.SpringApplication;

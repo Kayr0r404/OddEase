@@ -1,3 +1,10 @@
+"""Authentication utilities: password hashing, JWT token management, and user resolution.
+
+Provides Argon2 password hashing, creation and verification of
+access and refresh JWT tokens, and a FastAPI dependency
+(get_current_user) for protected routes.
+"""
+
 from datetime import datetime as dt, timedelta, timezone
 from typing import Annotated, Dict, Optional
 

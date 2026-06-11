@@ -1,3 +1,10 @@
+"""Route-level guard system: authentication, rate limiting, and CSRF protection.
+
+Provides public_route() and protected_route() helpers that inject FastAPI
+dependencies for token validation, sliding-window rate limiting, CSRF
+checking, and optional email-verification enforcement.
+"""
+
 import asyncio
 import time
 from dataclasses import dataclass
