@@ -12,7 +12,6 @@ from typing import Any, List, Literal, Protocol
 class PrivateUserRecord(BaseModel):
     id: str
     email: EmailStr
-    hashed_password: str
     first_name: str
     last_name: str
     username: str

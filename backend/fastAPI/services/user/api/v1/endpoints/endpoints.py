@@ -39,9 +39,9 @@ async def update_user(
     user_id: str,
     data: PrivateUser,
     user_repo: MongoUserRepository = Depends(get_user_repository),
-    x_user_id: Annotated[str | None, Header(alias="X-USER-ID")] = None,
+    current_user: Annotated[PrivateUser | None, Depends(CurrentUser)] = None,
 ) -> PrivateUser:
-    if x_user_id != user_id:
+    if current_user.id != user_id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not authorized to complete this operation",

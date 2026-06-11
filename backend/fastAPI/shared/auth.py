@@ -1,10 +1,3 @@
-"""Authentication utilities: password hashing, JWT token management, and user resolution.
-
-Provides Argon2 password hashing, creation and verification of
-access and refresh JWT tokens, and a FastAPI dependency
-(get_current_user) for protected routes.
-"""
-
 from datetime import datetime as dt, timedelta, timezone
 from typing import Annotated, Dict, Optional
 
@@ -146,14 +139,13 @@ def verify_refresh_token(refresh_token: str) -> str | None:
 
 async def get_current_user(
     request: Request,
-    access_token: Optional[str] = Cookie(None),  # or Cookie(None)
+    access_token: Optional[str] = Cookie(None),
     csrf_token: Optional[str] = Cookie(None),
-) -> PrivateUserRecord:
+) -> PrivateUserRecord | None:
     if not access_token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Not authenticated",
-            headers={"WWW-Authenticate": "Bearer"},  # fixed header name
         )
 
     if request.method in {"POST", "PUT", "PATCH", "DELETE"}:
@@ -165,7 +157,7 @@ async def get_current_user(
             )
 
     user_id = verify_access_token(token=access_token)
-    if not user_id:  # check the result, not the token
+    if not user_id:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or expired token",
@@ -189,6 +181,4 @@ async def get_current_user(
     return user
 
 
-CurrentUser = Annotated[
-    PrivateUserRecord, Depends(get_current_user)
-]  # aligned with return type
+CurrentUser = Annotated[PrivateUserRecord | None, Depends(get_current_user)]

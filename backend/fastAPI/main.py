@@ -30,16 +30,5 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-@app.middleware("http")
-async def add_user_id_to_request_header(request: Request, call_next):
-    user_id = CurrentUser.id
-    if user_id:
-        mutable_headers = MutableHeaders(scope=request.scope)
-        mutable_headers["X-USER-ID"] = str(user_id)
-
-    return await call_next(request)
-
-
 app.include_router(user_router, prefix="/api/v1")
 app.include_router(auth_router, prefix="/api/v1")

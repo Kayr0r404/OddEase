@@ -18,7 +18,6 @@ class CreateUser(BaseModel):
 class PrivateUser(BaseModel):
     id: str
     email: EmailStr
-    password: str
     first_name: str
     last_name: str
     username: str
